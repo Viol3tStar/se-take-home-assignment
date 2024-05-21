@@ -232,6 +232,9 @@ class _MyHomePageState extends State<MyHomePage> {
                 ),
                 const SizedBox(width: 20),
                 ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.red, // background color
+                  ),
                   onPressed: _removeBot,
                   child: const Text('- Bot'),
                 ),
