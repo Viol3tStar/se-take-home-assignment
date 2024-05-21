@@ -55,7 +55,7 @@ class _MyHomePageState extends State<MyHomePage> {
       setState(() {
         Bot lastBot = _bots.removeLast();
         if (lastBot.order != null) {
-          lastBot.order?.status = OrderStatus.pending;
+          lastBot.stopProcess();
           _pendingOrders.add(lastBot.order!);
           _sortPendingOrders();
         }
@@ -91,10 +91,13 @@ class _MyHomePageState extends State<MyHomePage> {
       for (var bot in _bots) {
         if (bot.status == BotStatus.idle) {
           Order order = _pendingOrders.removeAt(0);
-          await bot.processOrder(order);
-          _completedOrders.add(order);
-          setState(() {});
-          _assignOrder();
+          await bot.processOrder(order).then((_) {
+            _completedOrders.add(order);
+            setState(() {});
+            _assignOrder();
+          }).catchError((error) {
+            print("error: $error:");
+          });
           break;
         }
       }
@@ -134,7 +137,7 @@ class _MyHomePageState extends State<MyHomePage> {
               children: const [
                 Text('PENDING',
                     style:
-                        TextStyle(fontSize: 22, fontWeight: FontWeight.w800)),
+                        TextStyle(fontSize: 24, fontWeight: FontWeight.w600)),
               ],
             ),
           ),
@@ -188,19 +191,19 @@ class _MyHomePageState extends State<MyHomePage> {
                                     const SizedBox(
                                       width: 6,
                                     ),
-                                    const StatusBadge(
-                                      status: "PENDING",
-                                      color: Colors.grey
-                                    ),
-                                    const SizedBox(
-                                      width: 6,
-                                    ),
                                     if (_pendingOrders[index].orderType ==
                                         OrderType.vip)
                                       const StatusBadge(
                                         status: "VIP",
                                         color: Colors.deepPurpleAccent,
                                       ),
+                                    const SizedBox(
+                                      width: 6,
+                                    ),
+                                    const StatusBadge(
+                                      status: "PENDING",
+                                      color: Colors.grey
+                                    ),
                                   ],
                                 ),
                                 const SizedBox(
@@ -221,7 +224,7 @@ class _MyHomePageState extends State<MyHomePage> {
               children: [
                 const Text('Bots',
                     style:
-                    TextStyle(fontSize: 22, fontWeight: FontWeight.w800)),
+                    TextStyle(fontSize: 24, fontWeight: FontWeight.w600)),
                 const SizedBox(width: 20),
                 ElevatedButton(
                   onPressed: _addBot,
@@ -361,7 +364,7 @@ class _MyHomePageState extends State<MyHomePage> {
               children: const [
                 Text('COMPLETE',
                     style:
-                        TextStyle(fontSize: 22, fontWeight: FontWeight.w800)),
+                    TextStyle(fontSize: 24, fontWeight: FontWeight.w600)),
               ],
             ),
           ),
