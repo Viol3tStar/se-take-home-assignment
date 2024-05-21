@@ -1,5 +1,7 @@
 import 'package:feedme_assignment/models/bot.dart';
 import 'package:feedme_assignment/models/order.dart';
+import 'package:feedme_assignment/utils/styles.dart';
+import 'package:feedme_assignment/widgets/empty_list.dart';
 import 'package:feedme_assignment/widgets/status_badge.dart';
 import 'package:flutter/material.dart';
 
@@ -135,33 +137,12 @@ class _MyHomePageState extends State<MyHomePage> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: const [
-                Text('PENDING',
-                    style:
-                        TextStyle(fontSize: 24, fontWeight: FontWeight.w600)),
+                Text('PENDING', style: AppStyles.headingTextStyle),
               ],
             ),
           ),
           _pendingOrders.isEmpty
-              ? Center(
-                  child: SizedBox(
-                    height: 170,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: const [
-                        Icon(
-                          Icons.inbox,
-                          size: 80,
-                          color: Colors.grey,
-                        ),
-                        SizedBox(height: 16),
-                        Text(
-                          'No orders available',
-                          style: TextStyle(fontSize: 20, color: Colors.grey),
-                        ),
-                      ],
-                    ),
-                  ),
-                )
+              ? const EmptyList()
               : SizedBox(
                   width: double.infinity,
                   height: 170,
@@ -201,9 +182,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                       width: 6,
                                     ),
                                     const StatusBadge(
-                                      status: "PENDING",
-                                      color: Colors.grey
-                                    ),
+                                        status: "PENDING", color: Colors.grey),
                                   ],
                                 ),
                                 const SizedBox(
@@ -222,9 +201,7 @@ class _MyHomePageState extends State<MyHomePage> {
             padding: const EdgeInsets.all(8.0),
             child: Row(
               children: [
-                const Text('Bots',
-                    style:
-                    TextStyle(fontSize: 24, fontWeight: FontWeight.w600)),
+                const Text('Bots', style: AppStyles.headingTextStyle),
                 const SizedBox(width: 20),
                 ElevatedButton(
                   onPressed: _addBot,
@@ -243,152 +220,119 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
           const SizedBox(height: 10),
           _bots.isEmpty
-              ? Center(
-            child: SizedBox(
-              height: 170,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: const [
-                  Icon(
-                    Icons.inbox,
-                    size: 80,
-                    color: Colors.grey,
-                  ),
-                  SizedBox(height: 16),
-                  Text(
-                    'No bots available',
-                    style: TextStyle(fontSize: 20, color: Colors.grey),
-                  ),
-                ],
-              ),
-            ),
-          )
+              ? const EmptyList(
+                  warningMsg: 'No bots available',
+                )
               : SizedBox(
-            width: double.infinity,
-            height: 170,
-            child: GridView.builder(
-                scrollDirection: Axis.horizontal,
-                physics: const PageScrollPhysics(),
-                gridDelegate:
-                const SliverGridDelegateWithFixedCrossAxisCount(
-                    mainAxisSpacing: 2.0,
-                    crossAxisSpacing: 2.0,
-                    crossAxisCount: 2,
-                    childAspectRatio: 0.36),
-                itemCount: _bots.length,
-                itemBuilder: (context, index) => Card(
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Column(children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            'Bot ${index + 1}',
-                            style: Theme.of(context)
-                                .textTheme
-                                .labelLarge,
-                          ),
-                          const SizedBox(
-                            width: 6,
-                          ),
-                          StatusBadge(
-                            status: _bots[index].status ==
-                                BotStatus.active
-                                ? "ACTIVE"
-                                : "IDLE",
-                            color: _bots[index].status ==
-                                BotStatus.active
-                                ? Colors.greenAccent
-                                : Colors.grey,
-                          ),
-                        ],
-                      ),
-                      const SizedBox(
-                        height: 5,
-                      ),
-                      if (_bots[index].order?.orderId != null)
-                        Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text(
-                              '#${_bots[index].order?.orderId}',
-                              style: const TextStyle(fontSize: 12),
-                            ),
-                            Row(
-                              mainAxisAlignment:
-                              MainAxisAlignment.center,
-                              children: [
-                                const Text(
-                                  'Complete in: ',
-                                  style: TextStyle(fontSize: 10),
+                  width: double.infinity,
+                  height: 170,
+                  child: GridView.builder(
+                      scrollDirection: Axis.horizontal,
+                      physics: const PageScrollPhysics(),
+                      gridDelegate:
+                          const SliverGridDelegateWithFixedCrossAxisCount(
+                              mainAxisSpacing: 2.0,
+                              crossAxisSpacing: 2.0,
+                              crossAxisCount: 2,
+                              childAspectRatio: 0.36),
+                      itemCount: _bots.length,
+                      itemBuilder: (context, index) => Card(
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Column(children: [
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text(
+                                      'Bot ${index + 1}',
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .labelLarge,
+                                    ),
+                                    const SizedBox(
+                                      width: 6,
+                                    ),
+                                    StatusBadge(
+                                      status: _bots[index].status ==
+                                              BotStatus.active
+                                          ? "ACTIVE"
+                                          : "IDLE",
+                                      color: _bots[index].status ==
+                                              BotStatus.active
+                                          ? Colors.greenAccent
+                                          : Colors.grey,
+                                    ),
+                                  ],
                                 ),
-                                TweenAnimationBuilder<Duration>(
-                                    key: ValueKey(
-                                        _bots[index].order?.orderId),
-                                    duration:
-                                    const Duration(seconds: 10),
-                                    tween: Tween(
-                                        begin: const Duration(
-                                            seconds: 10),
-                                        end: Duration.zero),
-                                    onEnd: () {
-                                      // print('Timer ended');
-                                    },
-                                    builder: (BuildContext context,
-                                        Duration value,
-                                        Widget? child) {
-                                      final seconds = value.inSeconds;
-                                      return Padding(
-                                          padding: const EdgeInsets
-                                              .symmetric(vertical: 5),
-                                          child: Text('$seconds',
-                                              textAlign:
-                                              TextAlign.center,
-                                              style: const TextStyle(
-                                                  color: Colors.black,
-                                                  fontWeight:
-                                                  FontWeight.bold,
-                                                  fontSize: 10)));
-                                    })
-                              ],
-                            )
-                          ],
-                        )
-                    ]),
-                  ),
-                )),
-          ),
+                                const SizedBox(
+                                  height: 5,
+                                ),
+                                if (_bots[index].order?.orderId != null)
+                                  Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Text(
+                                        '#${_bots[index].order?.orderId}',
+                                        style: const TextStyle(fontSize: 12),
+                                      ),
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          const Text(
+                                            'Complete in: ',
+                                            style: TextStyle(fontSize: 10),
+                                          ),
+                                          TweenAnimationBuilder<Duration>(
+                                              key: ValueKey(
+                                                  _bots[index].order?.orderId),
+                                              duration:
+                                                  const Duration(seconds: 10),
+                                              tween: Tween(
+                                                  begin: const Duration(
+                                                      seconds: 10),
+                                                  end: Duration.zero),
+                                              onEnd: () {
+                                                // print('Timer ended');
+                                              },
+                                              builder: (BuildContext context,
+                                                  Duration value,
+                                                  Widget? child) {
+                                                final seconds = value.inSeconds;
+                                                return Padding(
+                                                    padding: const EdgeInsets
+                                                        .symmetric(vertical: 5),
+                                                    child: Text('$seconds',
+                                                        textAlign:
+                                                            TextAlign.center,
+                                                        style: const TextStyle(
+                                                            color: Colors.black,
+                                                            fontWeight:
+                                                                FontWeight.bold,
+                                                            fontSize: 10)));
+                                              })
+                                        ],
+                                      )
+                                    ],
+                                  )
+                              ]),
+                            ),
+                          )),
+                ),
           const SizedBox(height: 10),
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: const [
-                Text('COMPLETE',
-                    style:
-                    TextStyle(fontSize: 24, fontWeight: FontWeight.w600)),
+                Text('COMPLETE', style: AppStyles.headingTextStyle)
               ],
             ),
           ),
           const SizedBox(height: 20),
           _completedOrders.isEmpty
-              ? Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: const [
-                      Icon(
-                        Icons.inbox,
-                        size: 80,
-                        color: Colors.grey,
-                      ),
-                      SizedBox(height: 16),
-                      Text(
-                        'No orders completed',
-                        style: TextStyle(fontSize: 20, color: Colors.grey),
-                      ),
-                    ],
-                  ),
+              ? const EmptyList(
+                  warningMsg: 'No orders completed',
                 )
               : SizedBox(
                   width: double.infinity,
