@@ -36,7 +36,6 @@ class Bot {
       });
     }
     return completer!.future;
-
   }
 
   void stopProcess() {

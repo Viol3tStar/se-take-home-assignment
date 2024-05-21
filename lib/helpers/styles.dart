@@ -7,4 +7,9 @@ class AppStyles {
       fontSize: 24,
       fontWeight: FontWeight.w600
   );
+
+  static const TextStyle headingIndicatorTextStyle = TextStyle(
+      fontSize: 15,
+      fontWeight: FontWeight.w300
+  );
 }

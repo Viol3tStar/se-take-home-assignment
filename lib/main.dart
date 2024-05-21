@@ -1,9 +1,10 @@
 import 'package:feedme_assignment/models/bot.dart';
 import 'package:feedme_assignment/models/order.dart';
-import 'package:feedme_assignment/utils/styles.dart';
 import 'package:feedme_assignment/widgets/empty_list.dart';
 import 'package:feedme_assignment/widgets/status_badge.dart';
 import 'package:flutter/material.dart';
+
+import 'helpers/styles.dart';
 
 void main() {
   runApp(const MyApp());
@@ -39,11 +40,6 @@ class _MyHomePageState extends State<MyHomePage> {
   final List<Bot> _bots = [];
   final List<Order> _pendingOrders = [];
   final List<Order> _completedOrders = [];
-
-  @override
-  void initState() {
-    super.initState();
-  }
 
   void _addBot() {
     setState(() {
@@ -98,7 +94,7 @@ class _MyHomePageState extends State<MyHomePage> {
             setState(() {});
             _assignOrder();
           }).catchError((error) {
-            print("error: $error:");
+            print("_assignOrder error: $error:");
           });
           break;
         }
@@ -136,8 +132,10 @@ class _MyHomePageState extends State<MyHomePage> {
             padding: const EdgeInsets.all(8.0),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.start,
-              children: const [
-                Text('PENDING', style: AppStyles.headingTextStyle),
+              children: [
+                const Text('PENDING', style: AppStyles.headingTextStyle),
+                const SizedBox(width: 5,),
+                Text('(${_pendingOrders.length})', style: AppStyles.headingIndicatorTextStyle),
               ],
             ),
           ),
@@ -324,8 +322,10 @@ class _MyHomePageState extends State<MyHomePage> {
             padding: const EdgeInsets.all(8.0),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.start,
-              children: const [
-                Text('COMPLETE', style: AppStyles.headingTextStyle)
+              children: [
+                const Text('COMPLETE', style: AppStyles.headingTextStyle),
+                const SizedBox(width: 5,),
+                Text('(${_completedOrders.length})', style: AppStyles.headingIndicatorTextStyle),
               ],
             ),
           ),
