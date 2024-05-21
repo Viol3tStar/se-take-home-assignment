@@ -63,9 +63,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void _addOrder(OrderType orderType) {
     setState(() {
-      _pendingOrders.add(Order(
-          orderId: DateTime.now().millisecondsSinceEpoch.toString(),
-          orderType: orderType));
+      _pendingOrders.add(Order(orderId: DateTime.now().millisecondsSinceEpoch.toString(), orderType: orderType));
       _sortPendingOrders();
       _assignOrder();
     });
@@ -75,8 +73,7 @@ class _MyHomePageState extends State<MyHomePage> {
     _pendingOrders.sort((a, b) {
       if (a.orderType == OrderType.vip && b.orderType == OrderType.normal) {
         return -1;
-      } else if (a.orderType == OrderType.normal &&
-          b.orderType == OrderType.vip) {
+      } else if (a.orderType == OrderType.normal && b.orderType == OrderType.vip) {
         return 1;
       } else {
         return a.orderId.compareTo(b.orderId);
@@ -89,7 +86,7 @@ class _MyHomePageState extends State<MyHomePage> {
       for (var bot in _bots) {
         if (bot.status == BotStatus.idle) {
           Order order = _pendingOrders.removeAt(0);
-          await bot.processOrder(order).then((_) {
+          await bot.processOrder(order, duration: Duration(seconds: order.getDuration())).then((_) {
             _completedOrders.add(order);
             setState(() {});
             _assignOrder();
@@ -121,6 +118,9 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
               const SizedBox(width: 10),
               ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.deepPurpleAccent,
+                ),
                 onPressed: () {
                   _addOrder(OrderType.vip);
                 },
@@ -134,7 +134,9 @@ class _MyHomePageState extends State<MyHomePage> {
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 const Text('PENDING', style: AppStyles.headingTextStyle),
-                const SizedBox(width: 5,),
+                const SizedBox(
+                  width: 5,
+                ),
                 Text('(${_pendingOrders.length})', style: AppStyles.headingIndicatorTextStyle),
               ],
             ),
@@ -147,12 +149,8 @@ class _MyHomePageState extends State<MyHomePage> {
                   child: GridView.builder(
                       scrollDirection: Axis.horizontal,
                       physics: const PageScrollPhysics(),
-                      gridDelegate:
-                          const SliverGridDelegateWithFixedCrossAxisCount(
-                              mainAxisSpacing: 2.0,
-                              crossAxisSpacing: 2.0,
-                              crossAxisCount: 2,
-                              childAspectRatio: 0.36),
+                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                          mainAxisSpacing: 2.0, crossAxisSpacing: 2.0, crossAxisCount: 2, childAspectRatio: 0.36),
                       itemCount: _pendingOrders.length,
                       itemBuilder: (context, index) => Card(
                             child: Padding(
@@ -163,15 +161,12 @@ class _MyHomePageState extends State<MyHomePage> {
                                   children: [
                                     Text(
                                       'Order ${index + 1}',
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .labelLarge,
+                                      style: Theme.of(context).textTheme.labelLarge,
                                     ),
                                     const SizedBox(
                                       width: 6,
                                     ),
-                                    if (_pendingOrders[index].orderType ==
-                                        OrderType.vip)
+                                    if (_pendingOrders[index].orderType == OrderType.vip)
                                       const StatusBadge(
                                         status: "VIP",
                                         color: Colors.deepPurpleAccent,
@@ -179,8 +174,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                     const SizedBox(
                                       width: 6,
                                     ),
-                                    const StatusBadge(
-                                        status: "PENDING", color: Colors.grey),
+                                    const StatusBadge(status: "PENDING", color: Colors.grey),
                                   ],
                                 ),
                                 const SizedBox(
@@ -208,7 +202,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 const SizedBox(width: 20),
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.red, // background color
+                    backgroundColor: Colors.red,
                   ),
                   onPressed: _removeBot,
                   child: const Text('- Bot'),
@@ -227,12 +221,8 @@ class _MyHomePageState extends State<MyHomePage> {
                   child: GridView.builder(
                       scrollDirection: Axis.horizontal,
                       physics: const PageScrollPhysics(),
-                      gridDelegate:
-                          const SliverGridDelegateWithFixedCrossAxisCount(
-                              mainAxisSpacing: 2.0,
-                              crossAxisSpacing: 2.0,
-                              crossAxisCount: 2,
-                              childAspectRatio: 0.36),
+                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                          mainAxisSpacing: 2.0, crossAxisSpacing: 2.0, crossAxisCount: 2, childAspectRatio: 0.36),
                       itemCount: _bots.length,
                       itemBuilder: (context, index) => Card(
                             child: Padding(
@@ -243,22 +233,14 @@ class _MyHomePageState extends State<MyHomePage> {
                                   children: [
                                     Text(
                                       'Bot ${index + 1}',
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .labelLarge,
+                                      style: Theme.of(context).textTheme.labelLarge,
                                     ),
                                     const SizedBox(
                                       width: 6,
                                     ),
                                     StatusBadge(
-                                      status: _bots[index].status ==
-                                              BotStatus.active
-                                          ? "ACTIVE"
-                                          : "IDLE",
-                                      color: _bots[index].status ==
-                                              BotStatus.active
-                                          ? Colors.greenAccent
-                                          : Colors.grey,
+                                      status: _bots[index].status == BotStatus.active ? "ACTIVE" : "IDLE",
+                                      color: _bots[index].status == BotStatus.active ? Colors.greenAccent : Colors.grey,
                                     ),
                                   ],
                                 ),
@@ -274,41 +256,34 @@ class _MyHomePageState extends State<MyHomePage> {
                                         style: const TextStyle(fontSize: 12),
                                       ),
                                       Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
+                                        mainAxisAlignment: MainAxisAlignment.center,
                                         children: [
                                           const Text(
                                             'Complete in: ',
                                             style: TextStyle(fontSize: 10),
                                           ),
                                           TweenAnimationBuilder<Duration>(
-                                              key: ValueKey(
-                                                  _bots[index].order?.orderId),
-                                              duration:
-                                                  const Duration(seconds: 10),
-                                              tween: Tween(
-                                                  begin: const Duration(
-                                                      seconds: 10),
-                                                  end: Duration.zero),
+                                              key: ValueKey(_bots[index].order?.orderId),
+                                              duration: Duration(seconds: _bots[index].order?.getDuration() ?? 10),
+                                              tween: Tween(begin: Duration(seconds: _bots[index].order?.getDuration() ?? 10), end: const Duration(seconds: 1)),
                                               onEnd: () {
                                                 // print('Timer ended');
                                               },
-                                              builder: (BuildContext context,
-                                                  Duration value,
-                                                  Widget? child) {
+                                              builder: (BuildContext context, Duration value, Widget? child) {
                                                 final seconds = value.inSeconds;
                                                 return Padding(
-                                                    padding: const EdgeInsets
-                                                        .symmetric(vertical: 5),
+                                                    padding: const EdgeInsets.symmetric(vertical: 5),
                                                     child: Text('$seconds',
-                                                        textAlign:
-                                                            TextAlign.center,
+                                                        textAlign: TextAlign.center,
                                                         style: const TextStyle(
                                                             color: Colors.black,
-                                                            fontWeight:
-                                                                FontWeight.bold,
+                                                            fontWeight: FontWeight.bold,
                                                             fontSize: 10)));
-                                              })
+                                              }),
+                                          const Text(
+                                            's',
+                                            style: TextStyle(fontSize: 10),
+                                          ),
                                         ],
                                       )
                                     ],
@@ -324,7 +299,9 @@ class _MyHomePageState extends State<MyHomePage> {
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 const Text('COMPLETE', style: AppStyles.headingTextStyle),
-                const SizedBox(width: 5,),
+                const SizedBox(
+                  width: 5,
+                ),
                 Text('(${_completedOrders.length})', style: AppStyles.headingIndicatorTextStyle),
               ],
             ),
@@ -340,12 +317,8 @@ class _MyHomePageState extends State<MyHomePage> {
                   child: GridView.builder(
                       scrollDirection: Axis.horizontal,
                       physics: const PageScrollPhysics(),
-                      gridDelegate:
-                          const SliverGridDelegateWithFixedCrossAxisCount(
-                              mainAxisSpacing: 2.0,
-                              crossAxisSpacing: 2.0,
-                              crossAxisCount: 2,
-                              childAspectRatio: 0.36),
+                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                          mainAxisSpacing: 2.0, crossAxisSpacing: 2.0, crossAxisCount: 2, childAspectRatio: 0.36),
                       itemCount: _completedOrders.length,
                       itemBuilder: (context, index) => Card(
                             child: Padding(
@@ -364,8 +337,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                     const SizedBox(
                                       width: 6,
                                     ),
-                                    if (_completedOrders[index].orderType ==
-                                        OrderType.vip)
+                                    if (_completedOrders[index].orderType == OrderType.vip)
                                       const StatusBadge(
                                         status: "VIP",
                                         color: Colors.deepPurpleAccent,

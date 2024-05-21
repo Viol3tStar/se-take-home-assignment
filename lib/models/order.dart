@@ -11,4 +11,8 @@ class Order {
     required this.orderType,
     this.status = OrderStatus.pending,
   });
+
+  int getDuration() {
+    return 10;
+  }
 }
